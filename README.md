@@ -1,4 +1,4 @@
-# vuefin
+# VueFin
 [![Prettier](https://github.com/mateuslourenco/vuefin/actions/workflows/prettier.yml/badge.svg)](https://github.com/mateuslourenco/vuefin/actions/workflows/prettier.yml)
 
 ## Project setup
