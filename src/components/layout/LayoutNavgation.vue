@@ -13,6 +13,8 @@
           v-for="(router, i) in routerLinks"
           >{{ router.meta.title }}</router-link
         >
+        <hr />
+        <LayoutNewExpense></LayoutNewExpense>
       </ul>
     </div>
     <div class="has-text-centered">
@@ -23,9 +25,11 @@
 
 <script>
 import LayoutLogout from "./LayoutLogout.vue";
+import LayoutNewExpense from "./LayoutNewExpense.vue";
 export default {
   components: {
     LayoutLogout,
+    LayoutNewExpense,
   },
   computed: {
     routerLinks() {
