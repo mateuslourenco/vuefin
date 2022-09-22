@@ -14,6 +14,9 @@ const getters = {
     //Return current logged in user.
     return state.CurrentUser;
   },
+  GetIsAnyoneLoggedIn(state) {
+    return state.IsAnyoneLoggedIn;
+  },
 };
 
 const mutations = {
