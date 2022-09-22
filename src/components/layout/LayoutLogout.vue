@@ -1,5 +1,8 @@
 <template>
-  <div class="menu-list btn-logout" @click="logout()">Sair</div>
+  <div class="menu-list btn-logout" @click="logout()">
+    <i class="fa fa-power-off"></i>
+    Sair
+  </div>
 </template>
 
 <script>

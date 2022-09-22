@@ -11,8 +11,10 @@
           class="nav-link"
           :to="{ name: router.name }"
           v-for="(router, i) in routerLinks"
-          >{{ router.meta.title }}</router-link
         >
+          <i class="fas" :class="`fa-${router.meta.icon}`"></i>
+          {{ router.meta.title }}
+        </router-link>
         <hr />
         <LayoutNewExpense></LayoutNewExpense>
       </ul>
