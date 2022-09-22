@@ -30,6 +30,7 @@ export default {
 $menu-label-font-size: 2em;
 $menu-label-color: white;
 $menu-item-color: white;
+$modal-content-width: 50vw !default;
 @import "~bulma";
 
 #app {
