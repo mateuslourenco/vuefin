@@ -4,6 +4,7 @@
       class="button are-large is-primary is-outlined"
       @click="openModal()"
     >
+      <i class="mr-1 fa fa-plus"></i>
       Novo gasto
     </button>
     <form @submit.prevent="submit()">
