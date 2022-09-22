@@ -1,5 +1,5 @@
 import app from "../../../firebase.config.js";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const state = {
   IsAnyoneLoggedIn: false,
@@ -44,15 +44,9 @@ const actions = {
       getAuth(app),
       payload.email,
       payload.password
-    )
-      .then((userCredential) => {
-        // Signed in
-        console.log(userCredential);
-        // ...
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    ).catch((error) => {
+      console.log(error);
+    });
   },
   //This action is called by firebase.auth.js everytime there's a change on user's firebase token.
   //Used to bind a user to its livestream and populate state with user information.
@@ -61,6 +55,15 @@ const actions = {
     //Refreshes user's Firebase token to get its lastest information and get access to claims.
     let userObject = { email: payload.email, uid: payload.uid };
     commit("LOGIN", userObject); //Commit Firebase Auth user object to populate store state in mutation.
+  },
+  Logout({ commit }) {
+    signOut(getAuth())
+      .then(() => {
+        commit("LOGOUT");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
 
