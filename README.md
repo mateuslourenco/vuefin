@@ -1,5 +1,7 @@
 # VueFin
+[Link](https://vuefin-ef3eb.web.app/)
 [![Prettier](https://github.com/mateuslourenco/vuefin/actions/workflows/prettier.yml/badge.svg)](https://github.com/mateuslourenco/vuefin/actions/workflows/prettier.yml)
+
 
 ## Project setup
 ```
