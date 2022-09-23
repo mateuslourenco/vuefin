@@ -36,6 +36,19 @@
         </p>
       </div>
     </form>
+    <v-snackbar v-model="showSnackbar" :timeout="4000">
+      {{ text }}
+      <template v-slot:actions>
+        <v-btn
+          :color="color"
+          variant="text"
+          multi-line
+          @click="showSnackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -43,6 +56,9 @@
 export default {
   data: () => {
     return {
+      showSnackbar: false,
+      text: "",
+      color: "",
       userPayload: { email: "", password: "" },
       IsConfirmButtonLoading: false,
     };
@@ -50,9 +66,16 @@ export default {
   methods: {
     doLogin() {
       this.IsConfirmButtonLoading = true;
-      this.$store.dispatch("user/Login", this.userPayload).then(() => {
-        this.IsConfirmButtonLoading = false;
-        this.$router.push({ name: "home" }).catch(() => {});
+      this.$store.dispatch("user/Login", this.userPayload).then((resp) => {
+        if (resp instanceof Error) {
+          this.IsConfirmButtonLoading = false;
+          this.text = "Login ou senha incorretos";
+          this.color = "red";
+          this.showSnackbar = true;
+        } else {
+          this.IsConfirmButtonLoading = false;
+          this.$router.push({ name: "home" }).catch(() => {});
+        }
       });
     },
   },
