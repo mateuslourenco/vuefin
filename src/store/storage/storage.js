@@ -1,17 +1,18 @@
-import app from "../../../firebase.config.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
-const storage = getStorage(app);
+import { storage } from "../../../firebase.config.js";
 
 const actions = {
   SendImageToStorage(context, payload) {
-    const storageRef = ref(storage, payload.path + "/" + payload.fileName);
-    return uploadBytes(storageRef, payload.object).then((snapshot) => {
-      return snapshot;
-    });
+    return storage
+      .ref()
+      .child(payload.path)
+      .child(payload.fileName)
+      .put(payload.object)
+      .then((snapshot) => {
+        return snapshot;
+      });
   },
   GetImageDownloadURL(context, payload) {
-    return getDownloadURL(ref(storage, payload));
+    return storage.ref().child(payload).getDownloadURL();
   },
 };
 

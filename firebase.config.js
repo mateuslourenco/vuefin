@@ -1,11 +1,9 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+//Firebase modules used in this project.
+import firebase from "firebase/app";
+import "firebase/auth";
 import "firebase/database";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import "firebase/storage";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_API_KEY,
   authDomain: process.env.VUE_APP_AUTHDOMAIN,
@@ -17,6 +15,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
-export default app;
+firebase.initializeApp(firebaseConfig);
+export default firebase;
+export const database = firebase.database();
+export const storage = firebase.storage();

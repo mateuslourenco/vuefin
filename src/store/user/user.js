@@ -1,5 +1,5 @@
-import app from "../../../firebase.config.js";
-import { getAuth, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import firebase from "../../../firebase.config.js";
+import { database } from "../../../firebase.config.js";
 
 const state = {
   IsAnyoneLoggedIn: false,
@@ -39,14 +39,11 @@ const mutations = {
 
 const actions = {
   //Action called only once when user attempts to login. Takes a user object with email and password as a parameter.
-  Login(context, payload) {
-    return signInWithEmailAndPassword(
-      getAuth(app),
-      payload.email,
-      payload.password
-    ).catch((error) => {
-      return error;
-    });
+  Login({ state }, payload) {
+    if (state.IsAnyoneLoggedIn) return; //Cancel login if user is somehow logged in.
+    return firebase
+      .auth()
+      .signInWithEmailAndPassword(payload.email, payload.password); //Use Firebase Auth method to login user with given email and password.
   },
   //This action is called by firebase.auth.js everytime there's a change on user's firebase token.
   //Used to bind a user to its livestream and populate state with user information.
@@ -57,7 +54,11 @@ const actions = {
     commit("LOGIN", userObject); //Commit Firebase Auth user object to populate store state in mutation.
   },
   Logout({ commit }) {
-    signOut(getAuth())
+    database.goOffline();
+    database.goOnline();
+    firebase
+      .auth()
+      .signOut() //Use Firebase Auth method to logout user.
       .then(() => {
         commit("LOGOUT");
       })
