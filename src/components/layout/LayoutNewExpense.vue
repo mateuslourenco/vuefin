@@ -11,6 +11,7 @@
       <div class="modal" :class="{ 'is-active': showModal }">
         <div class="modal-background"></div>
         <div class="modal-card">
+          <BaseSpinner v-if="showSpinner" />
           <header class="modal-card-head">
             <p class="modal-card-title">Adicionar um novo gasto</p>
             <button
@@ -87,17 +88,31 @@
         </div>
       </div>
     </form>
+    <BaseSnackBar
+      :notificationObject="notificationObject"
+      v-if="showSnackbar"
+    />
   </div>
 </template>
 
 <script>
+import BaseSpinner from "../global/BaseSpinner.vue";
+import BaseSnackBar from "../global/BaseSnackBar.vue";
 export default {
   data: () => ({
+    showSpinner: false,
     showModal: false,
+    showSnackbar: false,
     form: {
       receipt: "",
       description: "",
       value: "",
+    },
+    notificationObject: {
+      snackbar: false,
+      message: "",
+      timeout: 2000,
+      color: "success",
     },
   }),
   computed: {
@@ -106,7 +121,6 @@ export default {
     },
     fileName() {
       const { receipt } = this.form;
-
       if (receipt) {
         const split = receipt.name.split(".");
         return `${split[0]}-${new Date().getTime()}.${split[1]}`;
@@ -120,7 +134,12 @@ export default {
       this.showModal = true;
     },
     closeModal() {
-      this.showModal = false;
+      (this.form = {
+        receipt: "",
+        description: "",
+        value: "",
+      }),
+        (this.showModal = false);
     },
     handleFile({ target }) {
       this.form.receipt = target.files[0];
@@ -128,6 +147,7 @@ export default {
     async submit() {
       let path = this.GetCurrentUser.uid;
       let url = "";
+      this.showSpinner = true;
       try {
         if (this.form.receipt) {
           const snapshot = await this.$store.dispatch(
@@ -138,13 +158,11 @@ export default {
               object: this.form.receipt,
             }
           );
-          console.log(snapshot.metadata.fullPath);
           url = await this.$store.dispatch(
             "storage/GetImageDownloadURL",
             snapshot.metadata.fullPath
           );
         }
-
         let formObject = {
           id: "",
           ...this.form,
@@ -156,12 +174,28 @@ export default {
             path: path,
             object: formObject,
           })
-          .then(this.closeModal());
+          .then(() => {
+            let description = this.form.description;
+            let value = this.form.value;
+            this.showSpinner = false;
+            this.closeModal();
+            this.notificationObject = {
+              snackbar: true,
+              message: `Gasto: ${description} Valor: R$ ${value}`,
+              timeout: 4000,
+              color: "success",
+            };
+            this.showSnackbar = true;
+            setTimeout(() => {
+              this.showSnackbar = false;
+            }, this.notificationObject.timeout);
+          });
       } catch (err) {
         console.log(err);
       }
     },
   },
+  components: { BaseSpinner, BaseSnackBar },
 };
 </script>
 
