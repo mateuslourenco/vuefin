@@ -194,6 +194,7 @@ export default {
             this.showSnackbar = true;
           });
       } catch (err) {
+        this.showSpinner = false;
         console.log(err);
       }
     },
