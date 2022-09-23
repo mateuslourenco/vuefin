@@ -88,16 +88,24 @@
         </div>
       </div>
     </form>
-    <BaseSnackBar
-      :notificationObject="notificationObject"
-      v-if="showSnackbar"
-    />
+    <v-snackbar v-model="showSnackbar" :timeout="snackbarObject.timeout">
+      {{ snackbarObject.text }}
+      <template v-slot:actions>
+        <v-btn
+          :color="snackbarObject.color"
+          variant="text"
+          multi-line
+          @click="showSnackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import BaseSpinner from "../global/BaseSpinner.vue";
-import BaseSnackBar from "../global/BaseSnackBar.vue";
 export default {
   data: () => ({
     showSpinner: false,
@@ -108,9 +116,8 @@ export default {
       description: "",
       value: "",
     },
-    notificationObject: {
-      snackbar: false,
-      message: "",
+    snackbarObject: {
+      text: "",
       timeout: 2000,
       color: "success",
     },
@@ -179,23 +186,19 @@ export default {
             let value = this.form.value;
             this.showSpinner = false;
             this.closeModal();
-            this.notificationObject = {
-              snackbar: true,
-              message: `Gasto: ${description} Valor: R$ ${value}`,
+            this.snackbarObject = {
+              text: `Gasto: ${description} Valor: R$ ${value}`,
               timeout: 4000,
               color: "success",
             };
             this.showSnackbar = true;
-            setTimeout(() => {
-              this.showSnackbar = false;
-            }, this.notificationObject.timeout);
           });
       } catch (err) {
         console.log(err);
       }
     },
   },
-  components: { BaseSpinner, BaseSnackBar },
+  components: { BaseSpinner },
 };
 </script>
 

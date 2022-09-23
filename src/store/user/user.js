@@ -45,7 +45,7 @@ const actions = {
       payload.email,
       payload.password
     ).catch((error) => {
-      console.log(error);
+      return error;
     });
   },
   //This action is called by firebase.auth.js everytime there's a change on user's firebase token.
