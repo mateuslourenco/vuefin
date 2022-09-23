@@ -13,6 +13,7 @@
 
 <script>
 import LayoutNavgation from "./components/layout/LayoutNavgation.vue";
+
 export default {
   name: "App",
   components: {
