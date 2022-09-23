@@ -3,6 +3,6 @@ module.exports = defineConfig({
   transpileDependencies: true,
 
   pluginOptions: {
-    vuetify: {}
-  }
+    vuetify: {},
+  },
 });
