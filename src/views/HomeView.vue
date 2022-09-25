@@ -4,7 +4,7 @@
       <div class="column is-half home-box">
         <small>Você gastou</small>
         <div class="money" v-money-format="values.totalSpent">R$</div>
-        <small>em 89 compras</small>
+        <small>em {{ expenses.length }} compras</small>
       </div>
       <div class="column is-half home-box">
         <small>A média de gastos é de</small>
