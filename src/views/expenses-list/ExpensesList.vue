@@ -11,7 +11,7 @@
 import moment from "moment";
 import groupBy from "lodash.groupby";
 export default {
-  name: "ListaGastosView",
+  name: "ExpensesList",
   data() {
     return {
       expenses: [],
