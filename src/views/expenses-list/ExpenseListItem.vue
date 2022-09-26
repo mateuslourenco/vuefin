@@ -1,15 +1,19 @@
 <template>
   <div class="expense-list-item columns">
-    <div class="column is-one-fifth">10/02/2022</div>
-    <div class="column is-three-fifths">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    <div class="column is-four-fifths">
+      <div>{{ data.description }}</div>
+      <small v-date-format="data.createdAt"></small>
     </div>
-    <div class="column is-one-fifth">R$ 100.00</div>
+    <div class="column is-one-fifth" v-money-format="data.value"></div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    data: Object,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
