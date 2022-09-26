@@ -1,15 +1,23 @@
 <template>
   <div>
     <div class="months-navigation">
-      <div :key="i" v-for="(month, i) in groupedMonths" class="month-link">
+      <div
+        :key="i"
+        v-for="(month, i) in groupedMonths"
+        class="month-link"
+        :class="{ active: month.month === selectedMonth.month }"
+        @click="setSelectedMonth(month)"
+      >
         <div class="month-label">{{ month.month }}</div>
         <div class="value-label" v-money-format="month.total">R$</div>
       </div>
     </div>
     <div class="container">
-      <expense-list-item></expense-list-item>
-      <expense-list-item></expense-list-item>
-      <expense-list-item></expense-list-item>
+      <expense-list-item
+        :key="index"
+        :data="item"
+        v-for="(item, index) in selectedMonth.data"
+      ></expense-list-item>
     </div>
   </div>
 </template>
@@ -26,6 +34,7 @@ export default {
   data() {
     return {
       expenses: [],
+      months: [],
       groupedMonths: [],
       selectedMonth: {},
     };
@@ -48,43 +57,56 @@ export default {
     },
   },
   methods: {
-    setGroupedMonths() {
-      const addCurrentMonth = () => {
-        this.groupedMonths.push({
-          data: [],
-          total: 0,
-          month: moment().format("MM/YYYY"),
-        });
-      };
-
-      const months = groupBy(this.expenses, (i) => {
+    addCurrentMonth() {
+      this.groupedMonths.push({
+        data: [],
+        total: 0,
+        month: moment().format("MM/YYYY"),
+      });
+    },
+    getMonths() {
+      return groupBy(this.expenses, (i) => {
         return moment(i.createdAt).format("MM/YYYY");
       });
-      const sortedMonths = Object.keys(months).sort((a, b) => {
-        if (
-          moment(`${a} 01`, "MM/YYYY HH").isBefore(
-            moment(`${b} 01`, "MM/YYYY HH")
-          )
-        ) {
-          return -1;
-        } else {
-          return +1;
-        }
+    },
+    getSortedMonths() {
+      return Object.keys(this.months).sort((a, b) => {
+        moment(`${a} 01`, "MM/YYYY HH").isBefore(
+          moment(`${b} 01`, "MM/YYYY HH")
+        )
+          ? -1
+          : +1;
       });
-      this.groupedMonths = sortedMonths.map((month) => ({
-        month,
-        data: months[month],
-        total: months[month]
-          .map((e) => Number(e.value))
-          .reduce((acc, cur) => acc + cur, 0),
-      }));
+    },
+    checkIfLastMonthIsCurrentMonth() {
       const lastMonth = moment(
         this.groupedMonths[this.groupedMonths.length - 1].month,
         "MM/YYYY"
       );
       if (!lastMonth.isSame(moment(), "month")) {
-        addCurrentMonth();
+        this.addCurrentMonth();
       }
+    },
+    setGroupedMonths() {
+      this.months = this.getMonths();
+      const sortedMonths = this.getSortedMonths();
+      this.groupedMonths = sortedMonths.map((month) => ({
+        month,
+        data: this.months[month],
+        total: this.months[month]
+          .map((e) => Number(e.value))
+          .reduce((acc, cur) => acc + cur, 0),
+      }));
+      this.checkIfLastMonthIsCurrentMonth();
+      this.setSelectedMonth();
+    },
+    setSelectedMonth(month = null) {
+      this.selectedMonth = month
+        ? month
+        : this.groupedMonths[this.groupedMonths.length - 1];
+    },
+    defineSelectedMonth(month) {
+      return moment(month, "MM/YYYY").isSame(moment(), "month");
     },
   },
   created() {
@@ -108,8 +130,11 @@ export default {
     cursor: pointer;
     transition: 0.4s;
     text-align: center;
+    &.active {
+      background-color: #385572;
+    }
     &:hover {
-      background-color: rgb(34, 48, 61);
+      background-color: #22303d;
     }
     .value-label {
       color: orange;
