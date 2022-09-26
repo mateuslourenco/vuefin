@@ -1,8 +1,15 @@
 <template>
-  <div class="months-navigation">
-    <div :key="i" v-for="(month, i) in groupedMonths" class="month-link">
-      <div class="month-label">{{ month.month }}</div>
-      <div class="value-label" v-money-format="month.total">R$</div>
+  <div>
+    <div class="months-navigation">
+      <div :key="i" v-for="(month, i) in groupedMonths" class="month-link">
+        <div class="month-label">{{ month.month }}</div>
+        <div class="value-label" v-money-format="month.total">R$</div>
+      </div>
+    </div>
+    <div class="container">
+      <expense-list-item></expense-list-item>
+      <expense-list-item></expense-list-item>
+      <expense-list-item></expense-list-item>
     </div>
   </div>
 </template>
@@ -10,12 +17,17 @@
 <script>
 import moment from "moment";
 import groupBy from "lodash.groupby";
+import ExpenseListItem from "./ExpenseListItem";
 export default {
   name: "ExpensesList",
+  components: {
+    ExpenseListItem,
+  },
   data() {
     return {
       expenses: [],
       groupedMonths: [],
+      selectedMonth: {},
     };
   },
   computed: {
@@ -37,6 +49,14 @@ export default {
   },
   methods: {
     setGroupedMonths() {
+      const addCurrentMonth = () => {
+        this.groupedMonths.push({
+          data: [],
+          total: 0,
+          month: moment().format("MM/YYYY"),
+        });
+      };
+
       const months = groupBy(this.expenses, (i) => {
         return moment(i.createdAt).format("MM/YYYY");
       });
@@ -51,7 +71,6 @@ export default {
           return +1;
         }
       });
-      console.log(months);
       this.groupedMonths = sortedMonths.map((month) => ({
         month,
         data: months[month],
@@ -59,6 +78,13 @@ export default {
           .map((e) => Number(e.value))
           .reduce((acc, cur) => acc + cur, 0),
       }));
+      const lastMonth = moment(
+        this.groupedMonths[this.groupedMonths.length - 1].month,
+        "MM/YYYY"
+      );
+      if (!lastMonth.isSame(moment(), "month")) {
+        addCurrentMonth();
+      }
     },
   },
   created() {
@@ -90,5 +116,11 @@ export default {
       font-size: 8pt;
     }
   }
+}
+
+.container {
+  font-size: 15pt;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 </style>
