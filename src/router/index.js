@@ -18,7 +18,7 @@ const routes = [
     name: "lista-gastos",
     component: () =>
       import(
-        /* webpackChunkName: "lista-gastos" */ "../views/lista-gastos/ListaGastosView.vue"
+        /* webpackChunkName: "lista-gastos" */ "../views/expenses-list/ExpensesList.vue"
       ),
     meta: {
       requiresLogin: true,
